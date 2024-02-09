@@ -210,3 +210,33 @@ button:hover {
   background-color: gainsboro;
   border-color: darkgray;
 }
+
+/* Game Section */
+#actual-game {
+  height: 720px;
+  width: 1280px;
+  background-color: white;
+  z-index: 10;
+  right: 0px;
+  top: 0px;
+}
+
+.curAsteroid {
+  position: absolute;
+  height: 42px;
+  width: 42px;
+  z-index: 9;
+  right: 0px;
+  top: 0px;
+}
+
+.curAsteroid img {
+  position: relative;
+  z-index: 10;
+  height: 80px;
+  left: -17px;
+  top: -15px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
