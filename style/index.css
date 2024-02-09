@@ -1,0 +1,212 @@
+/* ============ Winter 2024 EECS 493 Assignment 2 Starter Code ============ */
+
+/* Main Containers */
+body, button {
+  font-family: VT323;
+}
+button {
+  font-size: xx-large;
+}
+
+.outer-container {
+  height: 720px;
+  width: 1280px;
+  background: #eee;
+  border: 5px solid gainsboro;
+}
+
+.game-window {
+  height: 720px;
+  width: 1280px;
+  float: left;
+  position: relative;
+}
+
+/* Add your stylings here */
+
+#background {
+  height: 100%;
+  width: 100%;
+  /* z-index: -2; */
+}
+#first{
+  visibility: visible;
+}
+/* Main menu header */
+#header {
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  color: white;
+  border-bottom: 6px white;
+  border-bottom-style: groove;
+  background-color: darkslateblue;
+  font-size: 100px;
+}
+
+#headertitle {
+  font-size: 100px;
+  margin: auto;
+}
+
+/* Main Menu buttons */
+#buttons {
+  width: 10%;
+  left: 40%;
+  position: absolute;
+  top: 250;
+  /* transform: translateX(-70%); */
+}
+.firstbtn {
+  display: flex;
+  /* horizontally */
+  align-items: center;
+  /* vertically */
+  justify-content: center;
+  margin: 20%;
+  width: 200px;
+  height: 100px;
+  z-index: 0;
+  background-color: darkslateblue;
+  color: white;
+  /* font-size: 30px; */
+}
+
+/* Setting css */
+#settings {
+  width: 600px;
+  height: 690px;
+  position: absolute;
+  text-align: center;
+  margin: auto;
+  left: 50%;
+  border: 5px solid lightgray;
+  /* justify-content: center; */
+  left: 340px;
+  /* z-index: -1; */
+  visibility: hidden;
+  top: 10px;
+  background-color: darkslateblue;
+}
+
+.settings {
+  text-align: center;
+  height: 100px;
+  color: white;
+  visibility: None;
+}
+
+#Difficulty {
+  color: white;
+}
+
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+#volrange {
+  /* width: 600px; */
+  position: relative;
+  top: -90px;
+  background: #d3d3d3;
+  outline: none;
+  transition: opacity .2s;
+  opacity: 0.7;
+  width: 100%;
+  height: 25px;
+  appearance: none; 
+}
+
+#diffbuttons {
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
+.diff {
+  height: 100px;
+  width: 180px;
+  color:white;
+  background-color: purple;
+  position: relative;
+  top: -20px;
+}
+#norm {
+  border: 2px solid yellow; /* Style for the selected difficulty */
+}
+.diff.selected {
+  border: 2px solid yellow; /* Style for the selected difficulty */
+}
+
+#close {
+  height: 100px;
+  width: 180px;
+  color:white;
+  background-color: purple;
+  position: absolute;
+  bottom: 0%;
+  left: 210px
+}
+
+button:hover {
+  border-color: yellow;
+  border-width: 3px;
+}
+
+/* Tutorial page */
+#tutorial {
+  visibility: hidden;
+  /* z-index: 3; */
+  background-color: gainsboro;
+  font-size: 50px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  position: relative;
+  top: -50px;
+  line-height: 0.3; 
+  /* padding-top: 10px; */
+}
+#tuthead {
+  font-size: 75px;
+  padding-top: 20px;
+}
+.tutimg {
+  width: 100;
+  margin: 10px;
+}
+#tutstart {
+  width: 200px;
+  height: 75px;
+  margin-bottom: 20px;
+  background-color: gainsboro;
+  border-color: darkgray;
+}
