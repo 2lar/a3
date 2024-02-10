@@ -259,3 +259,31 @@ button:hover {
   position: absolute;
 }
 
+#rocket {
+  height: 100px;
+  width: 100px;
+  top: 150px;
+  left: 150px;
+  position: relative;
+}
+
+.rocket img {
+  height: 100px;
+  width: 100px;
+}
+
+.curShield {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.curShield img {
+  position: relative;
+  height: 100%;
+  left: -17px;
+  top: -15px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}

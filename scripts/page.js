@@ -27,6 +27,9 @@ var NORMAL = false;
 var HARD = false;
 
 let spawnrate = 800;
+let rocketspeed = 10;
+let score = 0;
+let currentShield = 1;
 
 /* --------------------------------- MAIN ---------------------------------- */
 $(document).ready(function () {
@@ -85,7 +88,7 @@ $(document).ready(function () {
   dangerval = $("#danger-valuue");
   levelval = $("#level-value");
   tutorial = $("#tutorial");
-  shield = $("#shield");
+  shield = $(".shield");
 
   // Example: Spawn an asteroid that travels from one border to another
   // spawn(); // Uncomment me to test out the effect!
@@ -164,7 +167,7 @@ function Ready(){
   // document.getElementById("tutorial").style.visibility = "hidden"
   document.getElementById("scoreboard").style.visibility = "visible";
   document.getElementById("getready").style.visibility = "visible";
-  play;
+  // play();
   setTimeout(function() {
     document.getElementById("getready").style.visibility = "hidden";
     readypage.hide();
@@ -181,35 +184,35 @@ function Ready(){
 }
 
 function moveRocketShip() {
-  var newXPos = parseInt(rocketship.css("left"));
-  var newYPos = parseInt(rocketship.css("top"));
+  var newXPos = parseInt(rocket.css("left"));
+  var newYPos = parseInt(rocket.css("top"));
 
   if (LEFT) {
-    newXPos -= ROCKETSHIP_MOVEMENT;
+    newXPos -= rocketspeed;
     // newXPos = max(0, newXPos);
-    $(rocketship_image).attr("src", "./src/player/player_left.gif");
+    $(rocket).attr("src", "./src/player/player_left.gif");
   }
   if (RIGHT) {
-    newXPos += ROCKETSHIP_MOVEMENT;
+    newXPos += rocketspeed;
     // newXPos = min(newXPos, maxPersonPosX);
-    $(rocketship_image).attr("src", "./src/player/player_right.gif");
+    $(rocket).attr("src", "./src/player/player_right.gif");
   }
   if (UP) {
-    newYPos -= ROCKETSHIP_MOVEMENT;
+    newYPos -= rocketspeed;
     // newYPos = max(0, newYPos);
-    $(rocketship_image).attr("src", "./src/player/player_up.gif");
+    $(rocket).attr("src", "./src/player/player_up.gif");
   }
   if (DOWN) {
-    newYPos += ROCKETSHIP_MOVEMENT;
+    newYPos += rocketspeed;
     // newYPos = min(newYPos, maxPersonPosY);
-    $(rocketship_image).attr("src", "./src/player/player_down.gif");
+    $(rocket).attr("src", "./src/player/player_down.gif");
   }
 
   newXPos = Math.max(0, Math.min(newXPos, maxPersonPosX));
-  newYPos = Math.max(0, Math.min(newYPos, maxRocketshipPosYP));
+  newYPos = Math.max(0, Math.min(newYPos, maxPersonPosY));
 
   // Update the rocket ship position
-  rocketship.css({
+  rocket.css({
     "left": newXPos,
     "top": newYPos
   });
@@ -238,12 +241,12 @@ function moveRocketShip() {
 }
 
 function spawnShield() {
-  let x = getRandomNumber(0, maxRocketshipPosX);
-  let y = getRandomNumber(0, maxRocketshipPosY);
+  let x = getRandomNumber(0, maxPersonPosX);
+  let y = getRandomNumber(0, maxPersonPosY);
   console.log(x, y);
 
-  let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = 'src/shield.gif'/></div>";
-  shield_section.append(objectString);
+  let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = './src/shield.gif'/></div>";
+  shield.append(objectString);
   // Save the shield element in a variable
   let currentShieldElement = $('#s-' + currentShield);
   setTimeout(function () {
@@ -260,18 +263,21 @@ function spawnShield() {
 function play(){
   game_screen.show();
   scoreboard.show();
-  rocket.hide();
+  // rocket.hide();
   readypage.show();
   if (EASY){
+    console.log("easy");
     dangerval.html(20);
     astProjectileSpeed = 1;
     spawnrate = 1000;
 
   } else if (NORMAL){
+    console.log("jprm,");
     dangerval.html(20);
     astProjectileSpeed = 3;
     spawnrate = 800;
   } else {
+    console.log("jard");
     dangerval.html(30);
     astProjectileSpeed = 5;
     spawnrate = 600;
