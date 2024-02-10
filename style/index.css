@@ -219,6 +219,7 @@ button:hover {
   z-index: 10;
   right: 0px;
   top: 0px;
+  visibility: hidden;
 }
 
 .curAsteroid {
@@ -240,3 +241,21 @@ button:hover {
   margin-right: auto;
   display: block;
 }
+
+#getready {
+  /* visibility: hidden; */
+  font-size: 75px;
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+}
+
+#scoreboard {
+  /* visibility: hidden; */
+  font-size: 50px;
+  right: 100px;
+  top: 10px;
+  bottom: auto;
+  position: absolute;
+}
+

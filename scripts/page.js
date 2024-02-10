@@ -26,6 +26,8 @@ var EASY = false;
 var NORMAL = false;
 var HARD = false;
 
+let spawnrate = 800;
+
 /* --------------------------------- MAIN ---------------------------------- */
 $(document).ready(function () {
   // jQuery selectors
@@ -69,6 +71,8 @@ $(document).ready(function () {
   $("#Play").on("click", openTutorial);
   function openTutorial() {
     $("#first").hide();
+    // $('#tutorial').show();
+    // document.getElementById('first').style.visibility = "hidden";
     document.getElementById('tutorial').style.visibility = "visible";
   }
   /* --------------------- ASSIGNMENT 2 SELECTORS END --------------------- */
@@ -80,7 +84,8 @@ $(document).ready(function () {
   scoreval = $("#score-value");
   dangerval = $("#danger-valuue");
   levelval = $("#level-value");
-
+  tutorial = $("#tutorial");
+  shield = $("#shield");
 
   // Example: Spawn an asteroid that travels from one border to another
   // spawn(); // Uncomment me to test out the effect!
@@ -88,12 +93,17 @@ $(document).ready(function () {
 
 
 /* ---------------------------- EVENT HANDLERS ----------------------------- */
+var movementInterval;
 // Keydown event handler
 document.onkeydown = function (e) {
   if (e.key == 'ArrowLeft') LEFT = true;
   if (e.key == 'ArrowRight') RIGHT = true;
   if (e.key == 'ArrowUp') UP = true;
   if (e.key == 'ArrowDown') DOWN = true;
+
+  if (!movementInterval) {
+    movementInterval = setInterval(moveRocketShip, 30); // Adjust the interval as needed
+  }
 }
 
 // Keyup event handler
@@ -102,6 +112,11 @@ document.onkeyup = function (e) {
   if (e.key == 'ArrowRight') RIGHT = false;
   if (e.key == 'ArrowUp') UP = false;
   if (e.key == 'ArrowDown') DOWN = false;
+  if (!LEFT && !RIGHT && !UP && !DOWN) {
+    clearInterval(movementInterval);
+    movementInterval = null;
+    $(rocket).attr("src", "./src/player/player.gif");
+  }
 }
 
 /* ------------------ ASSIGNMENT 2 EVENT HANDLERS BEGIN ------------------ */
@@ -138,7 +153,111 @@ function setDifficulty(difficulty) {
 /* ------------------- ASSIGNMENT 2 EVENT HANDLERS END ------------------- */
 
 // TODO: ADD MORE FUNCTIONS OR EVENT HANDLERS (FOR ASSIGNMENT 3) HERE
+
+$("#tutstart").on("click", Ready);
 function Ready(){
+  // scoreboard.show();
+  // getready.show();
+  tutorial.hide();
+  game_screen.show();
+  // document.getElementById("actual-game").style.visibility = "visible";
+  // document.getElementById("tutorial").style.visibility = "hidden"
+  document.getElementById("scoreboard").style.visibility = "visible";
+  document.getElementById("getready").style.visibility = "visible";
+  play;
+  setTimeout(function() {
+    document.getElementById("getready").style.visibility = "hidden";
+    readypage.hide();
+    document.getElementById("actual-game").style.visibility = "visible";
+    score_interval = setInterval(function () {
+      score += 40;
+      scoreval.html(score);
+    }, 500);
+  },3000);
+  setTimeout(function () {
+    setInterval(spawn, spawnrate);
+    setInterval(spawnShield, 10000);
+  }, 3000);
+}
+
+function moveRocketShip() {
+  var newXPos = parseInt(rocketship.css("left"));
+  var newYPos = parseInt(rocketship.css("top"));
+
+  if (LEFT) {
+    newXPos -= ROCKETSHIP_MOVEMENT;
+    // newXPos = max(0, newXPos);
+    $(rocketship_image).attr("src", "./src/player/player_left.gif");
+  }
+  if (RIGHT) {
+    newXPos += ROCKETSHIP_MOVEMENT;
+    // newXPos = min(newXPos, maxPersonPosX);
+    $(rocketship_image).attr("src", "./src/player/player_right.gif");
+  }
+  if (UP) {
+    newYPos -= ROCKETSHIP_MOVEMENT;
+    // newYPos = max(0, newYPos);
+    $(rocketship_image).attr("src", "./src/player/player_up.gif");
+  }
+  if (DOWN) {
+    newYPos += ROCKETSHIP_MOVEMENT;
+    // newYPos = min(newYPos, maxPersonPosY);
+    $(rocketship_image).attr("src", "./src/player/player_down.gif");
+  }
+
+  newXPos = Math.max(0, Math.min(newXPos, maxPersonPosX));
+  newYPos = Math.max(0, Math.min(newYPos, maxRocketshipPosYP));
+
+  // Update the rocket ship position
+  rocketship.css({
+    "left": newXPos,
+    "top": newYPos
+  });
+
+  // Check for collisions with shield and portal elements
+  let shieldExists = document.getElementById('shieldimg');
+  let portalExists = document.getElementById('portalimg');
+  
+  if (shieldExists !== null && isColliding(rocketship, $('#shieldimg'))) {
+    console.log('Shield');
+    removeElement(document.getElementById('shieldimg'));
+    shielded = true;
+    Play_Collect();
+  }
+  
+  if (portalExists !== null && isColliding(rocketship, $('#portalimg'))) {
+    console.log('Portal');
+    removeElement(document.getElementById('portalimg'));
+    level_num++;
+    danger_num += 2;
+    astProjectileSpeed *= 1.2;
+    $('#danger_num2').html(danger_num);
+    $('#level_num2').html(level_num);
+    Play_Collect();
+  }
+}
+
+function spawnShield() {
+  let x = getRandomNumber(0, maxRocketshipPosX);
+  let y = getRandomNumber(0, maxRocketshipPosY);
+  console.log(x, y);
+
+  let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = 'src/shield.gif'/></div>";
+  shield_section.append(objectString);
+  // Save the shield element in a variable
+  let currentShieldElement = $('#s-' + currentShield);
+  setTimeout(function () {
+    currentShieldElement.remove();
+  }, 5000);
+  this.id = $('#s-' + currentShield);
+  currentShield++; // ensure each Shield has its own id
+
+  // show this Shield's initial position on screen
+  this.id.css("top", y);
+  this.id.css("left", x);
+}
+
+function play(){
   game_screen.show();
   scoreboard.show();
   rocket.hide();
@@ -146,12 +265,16 @@ function Ready(){
   if (EASY){
     dangerval.html(20);
     astProjectileSpeed = 1;
-    spawn_rate
+    spawnrate = 1000;
 
   } else if (NORMAL){
-
+    dangerval.html(20);
+    astProjectileSpeed = 3;
+    spawnrate = 800;
   } else {
-
+    dangerval.html(30);
+    astProjectileSpeed = 5;
+    spawnrate = 600;
   }
   
 }

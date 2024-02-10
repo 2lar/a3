@@ -58,44 +58,46 @@
           <p><b>Gain</b> as many <i>points</i> as possible!</p>
           <button id="tutstart">Start</button>
         </div>
-
-      </div> <!-- end game-window -->
       <!-- actual game -->
       
-      <div id = "actual-game">
-        <img id="rocket" src="src/player/player.gif" alt="rocket">
-        <div id = "shield"></div>
-        <!-- ready screen -->
-        <div id = "getready">
-          <p>Get Ready!</p>
-        </div>
-        <div id = "arrowkeys">
-          <img src= "./src/arrowkeys.png">
-        </div>
-        <div id = "userarrows">
-          <p>Use arrow keys to move.</p>
-        </div>
+        <div id = "actual-game">
+          <img id="rocket" src="src/player/player.gif" alt="rocket">
+          <div id = "shield"></div>
+          <!-- ready screen -->
+          <div id="getready">
+            <div id = "getready!">
+              <p>Get Ready!</p>
+            </div>
+            <div id = "arrowkeys">
+              <img src= "./src/arrowkeys.png">
+            </div>
+            <div id = "userarrows">
+              <p>Use arrow keys to move.</p>
+            </div>
+          </div>
 
 
-        <!-- asteroids -->
-        <div class = "asteroidSection"></div>
-        <div id = "scoreboard">
-          <div id = "scoretext">
-            SCORE
+          <!-- asteroids -->
+          <div class = "asteroidSection"></div>
+          <div id = "scoreboard">
+            <div id = "scoretext">
+              SCORE
+            </div>
+            <span id="score-value">0</span>
+            <div class = "scoretext">
+              DANGER
+            </div>
+            <span id="danger-value">20</span>
+            <div class = "scoretext">
+              LEVEL
+            </div>
+            <span id="level-value">1</span>
           </div>
-          <span id="score-value">0</span>
-          <div class = "scoretext">
-            DANGER
-          </div>
-          <span id="danger-value">0</span>
-          <div class = "scoretext">
-            LEVEL
-          </div>
-          <span id="level-value">1</span>
         </div>
-      </div>
 
       <!-- Rocketship -->
+
+      </div> <!-- end game-window -->
 
       <!-- end actual game -->
   </div> <!-- end outer-container -->
