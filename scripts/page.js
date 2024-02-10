@@ -23,7 +23,7 @@ let DOWN = false;
 
 // TODO: ADD YOUR GLOBAL HELPER VARIABLES (IF NEEDED)
 var EASY = false;
-var NORMAL = false;
+var NORMAL = true;
 var HARD = false;
 
 let spawnrate = 800;
@@ -167,7 +167,7 @@ function Ready(){
   // document.getElementById("tutorial").style.visibility = "hidden"
   document.getElementById("scoreboard").style.visibility = "visible";
   document.getElementById("getready").style.visibility = "visible";
-  // play();
+  play();
   setTimeout(function() {
     document.getElementById("getready").style.visibility = "hidden";
     readypage.hide();
@@ -267,7 +267,7 @@ function play(){
   readypage.show();
   if (EASY){
     console.log("easy");
-    dangerval.html(20);
+    dangerval.html(10);
     astProjectileSpeed = 1;
     spawnrate = 1000;
 
