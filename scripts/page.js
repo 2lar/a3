@@ -85,7 +85,7 @@ $(document).ready(function () {
   readypage = $("#getready");
   rocket = $("#rocket");
   scoreval = $("#score-value");
-  dangerval = $("#danger-valuue");
+  dangerval = $("#danger-value");
   levelval = $("#level-value");
   tutorial = $("#tutorial");
   shield = $(".shield");
@@ -179,7 +179,8 @@ function Ready(){
   },3000);
   setTimeout(function () {
     setInterval(spawn, spawnrate);
-    setInterval(spawnShield, 10000);
+    setInterval(spawnShield, 15000);
+    setInterval(spawnPortal, 20000);
   }, 3000);
 }
 
@@ -217,48 +218,128 @@ function moveRocketShip() {
     "top": newYPos
   });
 
-  // Check for collisions with shield and portal elements
-  let shieldExists = document.getElementById('shieldimg');
-  let portalExists = document.getElementById('portalimg');
-  
-  if (shieldExists !== null && isColliding(rocketship, $('#shieldimg'))) {
-    console.log('Shield');
-    removeElement(document.getElementById('shieldimg'));
-    shielded = true;
-    Play_Collect();
+  // Check for collisions with asteroids
+  $(".curAsteroid").each(function() {
+    if (isColliding(rocket, $(this))) {
+      console.log('Collision with asteroid');
+      // Handle collision with asteroid here
+    }
+  });
+
+  // Check for collisions with portals
+  let portalExists = document.getElementById('currentPortal');
+  if (portalExists !== null && isColliding(rocket, $('#currentPortal'))) {
+    console.log('Collision with portal');
+    // Handle collision with portal here
   }
+
+ // Check for collisions with Shield
+ let shieldExists = document.getElementById('currentShield');
+ if (shieldExists !== null && isColliding(rocket, $('#currentShield'))) {
+   console.log('Collision with shield');
+   // Handle collision with shield here
+ }
+  // // Check for collisions with shield and portal elements
+  // let shieldExists = document.getElementById('shieldimg');
+  // let portalExists = document.getElementById('portalimg');
   
-  if (portalExists !== null && isColliding(rocketship, $('#portalimg'))) {
-    console.log('Portal');
-    removeElement(document.getElementById('portalimg'));
-    level_num++;
-    danger_num += 2;
-    astProjectileSpeed *= 1.2;
-    $('#danger_num2').html(danger_num);
-    $('#level_num2').html(level_num);
-    Play_Collect();
-  }
+  // if (shieldExists !== null && isColliding(rocketship, $('#shieldimg'))) {
+  //   console.log('Shield');
+  //   removeElement(document.getElementById('shieldimg'));
+  //   shielded = true;
+  //   Play_Collect();
+  // }
+  
+  // if (portalExists !== null && isColliding(rocketship, $('#portalimg'))) {
+  //   console.log('Portal');
+  //   removeElement(document.getElementById('portalimg'));
+  //   level_num++;
+  //   danger_num += 2;
+  //   astProjectileSpeed *= 1.2;
+  //   $('#danger_num2').html(danger_num);
+  //   $('#level_num2').html(level_num);
+  //   Play_Collect();
+  // }
 }
 
+// function spawnShield() {
+//   let x = getRandomNumber(0, maxPersonPosX);
+//   let y = getRandomNumber(0, maxPersonPosY);
+//   console.log(x, y);
+
+//   let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = './src/shield.gif'/></div>";
+//   shield.append(objectString);
+//   // Save the shield element in a variable
+//   let currentShieldElement = $('#s-' + currentShield);
+//   setTimeout(function () {
+//     currentShieldElement.remove();
+//   }, 5000);
+//   this.id = $('#s-' + currentShield);
+//   currentShield++; // ensure each Shield has its own id
+
+//   // show this Shield's initial position on screen
+//   this.id.css("top", y);
+//   this.id.css("left", x);
+// }
 function spawnShield() {
   let x = getRandomNumber(0, maxPersonPosX);
   let y = getRandomNumber(0, maxPersonPosY);
-  console.log(x, y);
 
-  let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = './src/shield.gif'/></div>";
-  shield.append(objectString);
-  // Save the shield element in a variable
-  let currentShieldElement = $('#s-' + currentShield);
+  let shield = document.createElement('img');
+  shield.id = "currentShield";
+  shield.src = "src/shield.gif";
+  shield.style.height = "62px";
+  shield.style.width = "62px";
+  shield.style.position = "absolute";
+  shield.style.left = x;
+  shield.style.top = y;
+
+  document.getElementById('actual-game').appendChild(shield);
+  // setTimeout('removeElement(document.getElementById("currentShield"))', 5000);
   setTimeout(function () {
-    currentShieldElement.remove();
+    shield.remove();
   }, 5000);
-  this.id = $('#s-' + currentShield);
-  currentShield++; // ensure each Shield has its own id
-
-  // show this Shield's initial position on screen
-  this.id.css("top", y);
-  this.id.css("left", x);
 }
+
+function spawnPortal() {
+  let x = getRandomNumber(0, maxPersonPosX);
+  let y = getRandomNumber(0, maxPersonPosY);
+
+  let portal = document.createElement('img');
+  portal.id = "currentPortal";
+  portal.src = "src/port.gif";
+  portal.style.height = "62px";
+  portal.style.width = "62px";
+  portal.style.position = "absolute";
+  portal.style.left = x;
+  portal.style.top = y;
+
+  document.getElementById('actual-game').appendChild(portal);
+  // setTimeout('removeElement(document.getElementById("currentPortal"))', 5000);
+  setTimeout(function () {
+    portal.remove();
+  }, 5000);
+}
+
+// function spawnPortal() {
+//   let x = getRandomNumber(0, maxPersonPosX);
+//   let y = getRandomNumber(0, maxPersonPosY);
+//   console.log(x, y);
+
+//   let objectString = "<div id = 's-" + currentPortal + "' class = 'curPortal' > <img src = './src/portal.gif'/></div>";
+//   shield.append(objectString);
+//   // Save the shield element in a variable
+//   let currentPortalElement = $('#s-' + currentPortal);
+//   setTimeout(function () {
+//     currentPortalElement.remove();
+//   }, 5000);
+//   this.id = $('#s-' + currentPortal);
+//   currentPortal++; // ensure each Shield has its own id
+
+//   // show this Shield's initial position on screen
+//   this.id.css("top", y);
+//   this.id.css("left", x);
+// }
 
 function play(){
   game_screen.show();
