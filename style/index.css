@@ -184,6 +184,7 @@ button:hover {
 /* Tutorial page */
 #tutorial {
   visibility: hidden;
+  height: 720px;
   /* z-index: 3; */
   background-color: gainsboro;
   font-size: 50px;
@@ -218,7 +219,7 @@ button:hover {
   background-color: white;
   z-index: 10;
   right: 0px;
-  top: 0px;
+  top: -15px;
   visibility: hidden;
 }
 
@@ -244,10 +245,14 @@ button:hover {
 
 #getready {
   /* visibility: hidden; */
+  top: -15px;
+  height: 720px;
+  width: 1280px;
   font-size: 75px;
-  position: relative;
+  position: absolute;
   text-align: center;
   font-weight: bold;
+  /* background-color: pink; */
 }
 
 #scoreboard {

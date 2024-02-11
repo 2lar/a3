@@ -36,6 +36,7 @@ let shielded = false;
 let vol = 50;
 let checker = 0;
 let restarted = false;
+let touched = false;
 
 /* --------------------------------- MAIN ---------------------------------- */
 $(document).ready(function () {
@@ -56,9 +57,14 @@ $(document).ready(function () {
   shield = $(".shield");
   overgame = $("#GameOver");
   buttons = $("#buttons");
-  first = $("#first")
+  first = $("#first");
+  header = $("header");
   
   overgame.hide();
+  asteroid_section.hide();
+  readypage.hide();
+  // tutorial.hide();
+  // first.hide();
   
 
   /* -------------------- ASSIGNMENT 2 SELECTORS BEGIN -------------------- */
@@ -143,7 +149,12 @@ document.onkeyup = function (e) {
   if (!LEFT && !RIGHT && !UP && !DOWN) {
     clearInterval(movementInterval);
     movementInterval = null;
-    $(rocket).attr("src", "./src/player/player.gif");
+    if (shielded){
+      $(rocket).attr("src", "./src/player/player_shielded.gif");
+    }else{
+      $(rocket).attr("src", "./src/player/player.gif");
+    }
+    
   }
 }
 
@@ -181,15 +192,29 @@ function setDifficulty(difficulty) {
 /* ------------------- ASSIGNMENT 2 EVENT HANDLERS END ------------------- */
 
 // TODO: ADD MORE FUNCTIONS OR EVENT HANDLERS (FOR ASSIGNMENT 3) HERE
+function freezeAsteroids() {
+  $(".curAsteroid").each(function() {
+    let asteroidId = $(this).attr('id');
+    let asteroid = asteroidId.substring(2); // Extract asteroid number
+    asteroids[asteroid].freeze(); // Freeze the asteroid
+  });
+}
 
 $("#tutstart").on("click", Ready);
 function Ready(){
+  first.hide();
   // scoreboard.show();
   // getready.show();
   tutorial.hide();
-  game_screen.show();
-  overgame.show();
-  scoreboard.show();
+  rocket.hide();
+  asteroid_section.show();
+  // document.getElementById("tutorial").style.visibility = "hidden";
+  // document.getElementById("tutstart").style.visibility = "hidden";
+  // game_screen.show();
+  // overgame.show();
+  // scoreboard.show();
+  game_window.show();
+  
   
   // document.getElementById("actual-game").style.visibility = "visible";
   // document.getElementById("tutorial").style.visibility = "hidden"
@@ -197,13 +222,15 @@ function Ready(){
   document.getElementById("getready").style.visibility = "visible";
   play();
   setTimeout(function() {
-    rocket.show();
-    document.getElementById("getready").style.visibility = "hidden";
+    // rocket.show();
+    // document.getElementById("getready").style.visibility = "hidden";
     readypage.hide();
-    document.getElementById("actual-game").style.visibility = "visible";
+    // document.getElementById("actual-game").style.visibility = "visible";
 
   },3000);
   setTimeout(function () {
+    document.getElementById("actual-game").style.visibility = "visible";
+    rocket.show();
     let astinter = setInterval(spawn, spawnrate);
     let shieldinter = setInterval(spawnShield, 15000);
     let portalinter = setInterval(spawnPortal, 20000);
@@ -227,12 +254,14 @@ function Ready(){
       }else{
         for (i = 0; i < allasteroids.length; i++){
           if(isColliding(rocket, $(allasteroids[i]))){
+            // freezeAsteroids;
+            clearInterval(astinter);
             console.log("checking collisions");
             $(rocket).attr("src", "./src/player/player_touched.gif");
             diesound();
             diesound();
             diesound();
-            $(window).off();
+            // $(window).off();
             clearInterval(astinter);
             clearInterval(shieldinter);
             clearInterval(portalinter);
@@ -257,7 +286,10 @@ function Game_Over() {
   game_screen.hide();
   buttons.hide();
   first.show();
-  rocket.hide();
+  // rocket.hide();
+  // game_window.hide();
+  // asteroid_section.hide();
+  // readypage.hide();
   // $(overgame).attr("visibility", "visible");
   document.getElementById("GameOver").style.visibility = "visible";
   overgame.show();
@@ -277,20 +309,25 @@ $("#reset").click(function () {
   score = 0;
   scoreval.html(score);
   leveljs = 1;
-  document.getElementById("GameOver").style.visibility = "hidden";
-  document.getElementById("buttons").style.visibility = "visible";
-  document.getElementById("first").style.visibility = "visible";
+  levelval.html(leveljs);
+  touched = false;
+  // document.getElementById("GameOver").style.visibility = "hidden";
+  // document.getElementById("buttons").style.visibility = "visible";
+  // document.getElementById("first").style.visibility = "visible";
+  overgame.hide();
+  first.show();
   buttons.show();
-  game_screen.show();
+  // game_screen.show();
   // scoreboard.show();
   astProjectileSpeed = 0.5;
   $('#rocket').attr('src', 'src/player/player.gif');
   restarted = true;
+  shielded = false;
   console.log(restarted);
 });
 
 function moveRocketShip() {
-  if (readypage.is(":visible")) {
+  if (readypage.is(":visible") || touched) {
     return; // Exit the function without moving the rocket
   }
   var newXPos = parseInt(rocket.css("left"));
@@ -347,6 +384,7 @@ function moveRocketShip() {
     if (isColliding(rocket, $(this))) {
       console.log('Collision with asteroid');
       // Handle collision with asteroid here
+      touched = true;
     }
   });
 
@@ -357,26 +395,29 @@ function moveRocketShip() {
     // Handle collision with portal here
     portalExists.remove();
     leveljs++;
-    dangerjs += 1;
-    astProjectileSpeed *= 2;
+    dangerjs += 2;
+    astProjectileSpeed *= 1.5;
     levelval.html(leveljs);
     dangerval.html(dangerjs);
     collectsound();
   }
 
- // Check for collisions with Shield
- let shieldExists = document.getElementById('currentShield');
- if (shieldExists !== null && isColliding(rocket, $('#currentShield'))) {
-   console.log('Collision with shield');
-   // Handle collision with shield here
+  // Check for collisions with Shield
+  let shieldExists = document.getElementById('currentShield');
+  if (shieldExists !== null && isColliding(rocket, $('#currentShield'))) {
+    console.log('Collision with shield');
+    // Handle collision with shield here
   //  rocket.src = "src/player/player_shielded.gif";
   //  rocketsrc = document.getElementById('rocket');
   //  rocket.attr("src", "./src/player/player_shielded.gif");
+    // $(rocket).attr("src", "./src/player/player_shielded.gif");
   //  $(rocket).attr("src", "./src/player/player_shielded.gif");
-   shielded = true;
-   shieldExists.remove();
-   collectsound();
- }
+  //  let image = document.getElementById("rocket");
+  //  rocket.src = "./src/player/player_shielded.gif";
+    shielded = true;
+    shieldExists.remove();
+    collectsound();
+  }
 }
 
 function spawnShield() {
@@ -486,6 +527,16 @@ class Asteroid {
     this.sign_of_switch = 'neg';
     // spawn an Asteroid at a random location on a random side of the board
     this.#spawnAsteroid();
+
+    // me add
+    this.frozen = false;
+  }
+
+  freeze(){
+    this.frozen = true;
+  }
+  unfreeze(){
+    this.frozen = false;
   }
 
   // Requires: called by the user
@@ -524,6 +575,7 @@ class Asteroid {
   // Modifies: cur_y, cur_x
   // Effects: move this Asteroid 1 unit in its designated direction
   updatePosition() {
+    if (touched) return;
     // ensures all asteroids travel at current level's speed
     this.cur_y += this.y_dest * astProjectileSpeed;
     this.cur_x += this.x_dest * astProjectileSpeed;
