@@ -30,6 +30,12 @@ let spawnrate = 800;
 let rocketspeed = 10;
 let score = 0;
 let currentShield = 1;
+let dangerjs = 0;
+let leveljs = 1
+let shielded = false;
+let vol = 50;
+let checker = 0;
+let restarted = false;
 
 /* --------------------------------- MAIN ---------------------------------- */
 $(document).ready(function () {
@@ -39,6 +45,21 @@ $(document).ready(function () {
   asteroid_section = $('.asteroidSection');
   // hide all other pages initially except landing page
   game_screen.hide();
+
+  scoreboard = $("#scoreboard");
+  readypage = $("#getready");
+  rocket = $("#rocket");
+  scoreval = $("#score-value");
+  dangerval = $("#danger-value");
+  levelval = $("#level-value");
+  tutorial = $("#tutorial");
+  shield = $(".shield");
+  overgame = $("#GameOver");
+  buttons = $("#buttons");
+  first = $("#first")
+  
+  overgame.hide();
+  
 
   /* -------------------- ASSIGNMENT 2 SELECTORS BEGIN -------------------- */
   $("#easy").click(SelectEasy);
@@ -76,19 +97,23 @@ $(document).ready(function () {
     $("#first").hide();
     // $('#tutorial').show();
     // document.getElementById('first').style.visibility = "hidden";
-    document.getElementById('tutorial').style.visibility = "visible";
+    console.log("this is");
+    console.log(restarted);
+    if (restarted){
+      console.log("restarted");
+      scoreboard.show();
+      game_screen.show();
+      Ready();
+    }else{
+      console.log("else open");
+      document.getElementById('tutorial').style.visibility = "visible";
+    }
+    
   }
   /* --------------------- ASSIGNMENT 2 SELECTORS END --------------------- */
 
   // TODO: DEFINE YOUR JQUERY SELECTORS (FOR ASSIGNMENT 3) HERE
-  scoreboard = $("#scoreboard");
-  readypage = $("#getready");
-  rocket = $("#rocket");
-  scoreval = $("#score-value");
-  dangerval = $("#danger-value");
-  levelval = $("#level-value");
-  tutorial = $("#tutorial");
-  shield = $(".shield");
+
 
   // Example: Spawn an asteroid that travels from one border to another
   // spawn(); // Uncomment me to test out the effect!
@@ -163,50 +188,149 @@ function Ready(){
   // getready.show();
   tutorial.hide();
   game_screen.show();
+  overgame.show();
+  scoreboard.show();
+  
   // document.getElementById("actual-game").style.visibility = "visible";
   // document.getElementById("tutorial").style.visibility = "hidden"
   document.getElementById("scoreboard").style.visibility = "visible";
   document.getElementById("getready").style.visibility = "visible";
   play();
   setTimeout(function() {
+    rocket.show();
     document.getElementById("getready").style.visibility = "hidden";
     readypage.hide();
     document.getElementById("actual-game").style.visibility = "visible";
+
+  },3000);
+  setTimeout(function () {
+    let astinter = setInterval(spawn, spawnrate);
+    let shieldinter = setInterval(spawnShield, 15000);
+    let portalinter = setInterval(spawnPortal, 20000);
     score_interval = setInterval(function () {
       score += 40;
       scoreval.html(score);
     }, 500);
-  },3000);
-  setTimeout(function () {
-    setInterval(spawn, spawnrate);
-    setInterval(spawnShield, 15000);
-    setInterval(spawnPortal, 20000);
+    function check_collisions() {
+      console.log("in vollision hceck");
+      const allasteroids = document.querySelectorAll("div[id^='a-']");
+      if (shielded){
+        for (i = 0; i < allasteroids.length; i++){
+          if (isColliding(rocket, $(allasteroids[i]))){
+            console.log("not colliding");
+            shielded = false;
+            let temp = allasteroids[i].id;
+            deleting = document.getElementById(temp);
+            deleting.remove();
+          }
+        }
+      }else{
+        for (i = 0; i < allasteroids.length; i++){
+          if(isColliding(rocket, $(allasteroids[i]))){
+            console.log("checking collisions");
+            $(rocket).attr("src", "./src/player/player_touched.gif");
+            diesound();
+            diesound();
+            diesound();
+            $(window).off();
+            clearInterval(astinter);
+            clearInterval(shieldinter);
+            clearInterval(portalinter);
+            clearInterval(score_interval);
+            setTimeout(function () {
+              Game_Over();
+            }, 2000);
+            clearInterval(checker);       
+          }
+        }
+      }
+    }
+    checker = setInterval(check_collisions, 10);
   }, 3000);
+  // let a = setInterval(check_collisions, 10);
 }
 
+function Game_Over() {
+  // document.getElementById('game_right_section2').style.zIndex = -1;
+  scoreboard.hide();
+  // document.getElementById('actual_game').style.zIndex = -1;
+  game_screen.hide();
+  buttons.hide();
+  first.show();
+  rocket.hide();
+  // $(overgame).attr("visibility", "visible");
+  document.getElementById("GameOver").style.visibility = "visible";
+  overgame.show();
+  document.getElementById("finalscore").innerHTML = score;
+  document.getElementById('rocket').style.left = '600px';
+  document.getElementById('rocket').style.top = '300px';
+  const allasteroids2= document.querySelectorAll("div[id^='a-']");
+  for (i = 0; i < allasteroids2.length; ++i) {
+    let temp = allasteroids2[i].id;
+    deleting = document.getElementById(temp);
+    deleting.remove();
+  }
+}
+
+$("#reset").click(function () {
+  console.log("into reset");
+  score = 0;
+  scoreval.html(score);
+  leveljs = 1;
+  document.getElementById("GameOver").style.visibility = "hidden";
+  document.getElementById("buttons").style.visibility = "visible";
+  document.getElementById("first").style.visibility = "visible";
+  buttons.show();
+  game_screen.show();
+  // scoreboard.show();
+  astProjectileSpeed = 0.5;
+  $('#rocket').attr('src', 'src/player/player.gif');
+  restarted = true;
+  console.log(restarted);
+});
+
 function moveRocketShip() {
+  if (readypage.is(":visible")) {
+    return; // Exit the function without moving the rocket
+  }
   var newXPos = parseInt(rocket.css("left"));
   var newYPos = parseInt(rocket.css("top"));
 
   if (LEFT) {
     newXPos -= rocketspeed;
     // newXPos = max(0, newXPos);
-    $(rocket).attr("src", "./src/player/player_left.gif");
+    if (shielded){
+      $(rocket).attr("src", "./src/player/player_shielded_left.gif");
+    }else{
+      $(rocket).attr("src", "./src/player/player_left.gif");
+    }
   }
   if (RIGHT) {
     newXPos += rocketspeed;
     // newXPos = min(newXPos, maxPersonPosX);
-    $(rocket).attr("src", "./src/player/player_right.gif");
+    if (shielded){
+      $(rocket).attr("src", "./src/player/player_shielded_right.gif");
+    }else{
+      $(rocket).attr("src", "./src/player/player_right.gif");
+    }
   }
   if (UP) {
     newYPos -= rocketspeed;
     // newYPos = max(0, newYPos);
-    $(rocket).attr("src", "./src/player/player_up.gif");
+    if (shielded){
+      $(rocket).attr("src", "./src/player/player_shielded_up.gif");
+    }else{
+      $(rocket).attr("src", "./src/player/player_up.gif");
+    }
   }
   if (DOWN) {
     newYPos += rocketspeed;
     // newYPos = min(newYPos, maxPersonPosY);
-    $(rocket).attr("src", "./src/player/player_down.gif");
+    if (shielded){
+      $(rocket).attr("src", "./src/player/player_shielded_down.gif");
+    }else{
+      $(rocket).attr("src", "./src/player/player_down.gif");
+    }
   }
 
   newXPos = Math.max(0, Math.min(newXPos, maxPersonPosX));
@@ -231,6 +355,13 @@ function moveRocketShip() {
   if (portalExists !== null && isColliding(rocket, $('#currentPortal'))) {
     console.log('Collision with portal');
     // Handle collision with portal here
+    portalExists.remove();
+    leveljs++;
+    dangerjs += 1;
+    astProjectileSpeed *= 2;
+    levelval.html(leveljs);
+    dangerval.html(dangerjs);
+    collectsound();
   }
 
  // Check for collisions with Shield
@@ -238,49 +369,16 @@ function moveRocketShip() {
  if (shieldExists !== null && isColliding(rocket, $('#currentShield'))) {
    console.log('Collision with shield');
    // Handle collision with shield here
+  //  rocket.src = "src/player/player_shielded.gif";
+  //  rocketsrc = document.getElementById('rocket');
+  //  rocket.attr("src", "./src/player/player_shielded.gif");
+  //  $(rocket).attr("src", "./src/player/player_shielded.gif");
+   shielded = true;
+   shieldExists.remove();
+   collectsound();
  }
-  // // Check for collisions with shield and portal elements
-  // let shieldExists = document.getElementById('shieldimg');
-  // let portalExists = document.getElementById('portalimg');
-  
-  // if (shieldExists !== null && isColliding(rocketship, $('#shieldimg'))) {
-  //   console.log('Shield');
-  //   removeElement(document.getElementById('shieldimg'));
-  //   shielded = true;
-  //   Play_Collect();
-  // }
-  
-  // if (portalExists !== null && isColliding(rocketship, $('#portalimg'))) {
-  //   console.log('Portal');
-  //   removeElement(document.getElementById('portalimg'));
-  //   level_num++;
-  //   danger_num += 2;
-  //   astProjectileSpeed *= 1.2;
-  //   $('#danger_num2').html(danger_num);
-  //   $('#level_num2').html(level_num);
-  //   Play_Collect();
-  // }
 }
 
-// function spawnShield() {
-//   let x = getRandomNumber(0, maxPersonPosX);
-//   let y = getRandomNumber(0, maxPersonPosY);
-//   console.log(x, y);
-
-//   let objectString = "<div id = 's-" + currentShield + "' class = 'curShield' > <img src = './src/shield.gif'/></div>";
-//   shield.append(objectString);
-//   // Save the shield element in a variable
-//   let currentShieldElement = $('#s-' + currentShield);
-//   setTimeout(function () {
-//     currentShieldElement.remove();
-//   }, 5000);
-//   this.id = $('#s-' + currentShield);
-//   currentShield++; // ensure each Shield has its own id
-
-//   // show this Shield's initial position on screen
-//   this.id.css("top", y);
-//   this.id.css("left", x);
-// }
 function spawnShield() {
   let x = getRandomNumber(0, maxPersonPosX);
   let y = getRandomNumber(0, maxPersonPosY);
@@ -315,31 +413,24 @@ function spawnPortal() {
   portal.style.top = y;
 
   document.getElementById('actual-game').appendChild(portal);
-  // setTimeout('removeElement(document.getElementById("currentPortal"))', 5000);
   setTimeout(function () {
     portal.remove();
   }, 5000);
 }
 
-// function spawnPortal() {
-//   let x = getRandomNumber(0, maxPersonPosX);
-//   let y = getRandomNumber(0, maxPersonPosY);
-//   console.log(x, y);
+function collectsound() {
+  document.getElementById('collect').volume = vol / 100;
+  console.log(document.getElementById('collect').volume);
+  document.getElementById('collect').play();
+}
 
-//   let objectString = "<div id = 's-" + currentPortal + "' class = 'curPortal' > <img src = './src/portal.gif'/></div>";
-//   shield.append(objectString);
-//   // Save the shield element in a variable
-//   let currentPortalElement = $('#s-' + currentPortal);
-//   setTimeout(function () {
-//     currentPortalElement.remove();
-//   }, 5000);
-//   this.id = $('#s-' + currentPortal);
-//   currentPortal++; // ensure each Shield has its own id
-
-//   // show this Shield's initial position on screen
-//   this.id.css("top", y);
-//   this.id.css("left", x);
-// }
+function diesound() {
+  document.getElementById('die').volume = vol / 100;
+  console.log(vol);
+  console.log("vol");
+  console.log(document.getElementById('die').volume);
+  document.getElementById('die').play();
+}
 
 function play(){
   game_screen.show();
@@ -349,17 +440,20 @@ function play(){
   if (EASY){
     console.log("easy");
     dangerval.html(10);
+    dangerjs = 10;
     astProjectileSpeed = 1;
     spawnrate = 1000;
 
   } else if (NORMAL){
     console.log("jprm,");
     dangerval.html(20);
+    dangerjs = 20;
     astProjectileSpeed = 3;
     spawnrate = 800;
   } else {
     console.log("jard");
     dangerval.html(30);
+    dangerjs = 30;
     astProjectileSpeed = 5;
     spawnrate = 600;
   }

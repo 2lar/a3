@@ -25,6 +25,13 @@
             <img class="headerthings" src="src/asteroid.png" alt="right asteroid">
           </div>
 
+          <div id="GameOver">
+            <p>GAME OVER!</p>
+            <p>YOU HAVE TO FIX SPACESHIP!</p>
+            <p><span id="finalscore"></span></p>
+            <button id="reset">Start Over</button>
+          </div>
+
           <div id="buttons">
             <button id="Play" class="firstbtn">Play game!</button>
             <button id="Setting" class="firstbtn">Settings</button>
@@ -58,6 +65,8 @@
           <p><b>Gain</b> as many <i>points</i> as possible!</p>
           <button id="tutstart">Start</button>
         </div>
+        <audio id="die" src="src/audio/die.mp3" ></audio>
+        <audio id="collect" src="src/audio/collect.mp3" ></audio>
       <!-- actual game -->
       
         <div id = "actual-game">

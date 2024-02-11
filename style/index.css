@@ -287,3 +287,22 @@ button:hover {
   margin-right: auto;
   display: block;
 }
+
+#GameOver {
+  height: 275px;
+  width: 450px;
+  text-align: center;
+  font-size: 30px;
+  background-color: darkslateblue;
+  color: white;
+  position: absolute;
+  width: 50%;
+  left: 25%;
+  top: 40%;
+  visibility: hidden;
+}
+#reset {
+  position: relative;
+  left: auto;
+  top: auto;
+}
